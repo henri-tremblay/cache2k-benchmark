@@ -251,7 +251,7 @@ traces="Web07 Web12 Cpp Sprite Multi2 Oltp Zipf900 Zipf10k TotalRandom1000 \
        OrmAccessBusytime OrmAccessNight Glimpse ScarabRecs ScarabProds";
 
 # S/WTLfu S/WTLfu90
-header="Size OPT LRU S/LRU CLOCK Cache2k ARC CAR S/Lirs EHCache2 Guava Caffeine S/Mru S/Lfu RAND";
+header="Size OPT LRU S/LRU CLOCK Cache2k ARC CAR S/Lirs EHCache2 EHCache3 Guava Caffeine S/Mru S/Lfu RAND";
 #         org.cache2k.benchmark.thirdparty.CaffeineSimulatorWTinyLfuBenchmark \
 #        org.cache2k.benchmark.thirdparty.CaffeineSimulatorWTinyLfu90Benchmark \
 impls="org.cache2k.benchmark.thirdparty.CaffeineSimulatorOptBenchmark \
@@ -263,6 +263,7 @@ impls="org.cache2k.benchmark.thirdparty.CaffeineSimulatorOptBenchmark \
         org.cache2k.benchmark.CarCacheBenchmark \
         org.cache2k.benchmark.thirdparty.CaffeineSimulatorLirsBenchmark \
         org.cache2k.benchmark.thirdparty.EhCache2Benchmark \
+        org.cache2k.benchmark.thirdparty.EhCache3Benchmark \
         org.cache2k.benchmark.thirdparty.GuavaCacheBenchmark \
         org.cache2k.benchmark.thirdparty.CaffeineBenchmark \
         org.cache2k.benchmark.thirdparty.CaffeineSimulatorMruBenchmark \
@@ -279,11 +280,12 @@ for I in $traces; do
   plot $f "Hitrates for $I trace";
 done
 
-header="Size OPT LRU CLOCK EHCache2 Guava Caffeine cache2k RAND";
+header="Size OPT LRU CLOCK EHCache2 EHCache3 Guava Caffeine cache2k RAND";
 impls="org.cache2k.benchmark.thirdparty.CaffeineSimulatorOptBenchmark \
 	   org.cache2k.benchmark.LruCacheBenchmark \
        org.cache2k.benchmark.ClockCacheBenchmark \
        org.cache2k.benchmark.thirdparty.EhCache2Benchmark \
+       org.cache2k.benchmark.thirdparty.EhCache3Benchmark \
        org.cache2k.benchmark.thirdparty.GuavaCacheBenchmark \
        org.cache2k.benchmark.thirdparty.CaffeineBenchmark \
        org.cache2k.benchmark.Cache2kDefaultBenchmark \
@@ -299,11 +301,12 @@ for I in $traces; do
   plot $f "Hitrates for $I trace";
 done
 
-header="Size OPT LRU CLOCK EHCache2 Guava Caffeine Caffeine- cache2k RAND";
+header="Size OPT LRU CLOCK EHCache2 EHCache3 Guava Caffeine Caffeine- cache2k RAND";
 impls="org.cache2k.benchmark.thirdparty.CaffeineSimulatorOptBenchmark \
 	   org.cache2k.benchmark.LruCacheBenchmark \
        org.cache2k.benchmark.ClockCacheBenchmark \
        org.cache2k.benchmark.thirdparty.EhCache2Benchmark \
+       org.cache2k.benchmark.thirdparty.EhCache3Benchmark \
        org.cache2k.benchmark.thirdparty.GuavaCacheBenchmark \
        org.cache2k.benchmark.thirdparty.CaffeineBenchmark \
        org.cache2k.benchmark.thirdparty.CaffeineRegularBenchmark \
