@@ -19,7 +19,6 @@ SITE="../cache2k/src/site/resources/benchmark-result";
 # replace class names by short name of each cache implementation for graph labeling
 cacheShortNames() {
 local script=`cat << EOF
-s/org.cache2k.benchmark.thirdparty.EhCache2Factory/EhCache2/
 s/org.cache2k.benchmark.thirdparty.EhCache3Factory/EhCache3/
 s/org.cache2k.benchmark.thirdparty.CaffeineCacheFactory/Caffeine/
 s/org.cache2k.benchmark.thirdparty.GuavaCacheFactory/Guava/
@@ -33,7 +32,6 @@ sed "$script";
 CACHE_FACTORY_LIST="org.cache2k.benchmark.Cache2kFactory \
 org.cache2k.benchmark.thirdparty.CaffeineCacheFactory \
 org.cache2k.benchmark.thirdparty.GuavaCacheFactory \
-org.cache2k.benchmark.thirdparty.EhCache2Factory \
 org.cache2k.benchmark.thirdparty.EhCache3Factory";
 
 # for TCache we need to add:
@@ -430,7 +428,7 @@ gnuplot "${in}-notitle-print.plot";
 # example:
 # 1-20,org.cache2k.benchmark.Cache2kFactory,0.00,65.72,993.08,614.8539540861144
 # 1-20,org.cache2k.benchmark.thirdparty.CaffeineCacheFactory,0.00,71.27,1000.42,852.382233323991
-# 1-20,org.cache2k.benchmark.thirdparty.EhCache2Factory,0.00,58.28,606.75,204.83546236165807
+# 1-20,org.cache2k.benchmark.thirdparty.EhCache3Factory,0.00,58.28,606.75,204.83546236165807
 extractMemoryThreadsHitRate() {
 local query=`cat << EOF
 .[] |  select (.benchmark | contains (".$1") ) |
