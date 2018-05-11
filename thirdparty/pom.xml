@@ -32,11 +32,13 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>20.0</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-core</artifactId>
       <version>7.1.0.CR2</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.ehcache</groupId>
@@ -47,11 +49,13 @@
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>caffeine</artifactId>
       <version>${caffeine.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>simulator</artifactId>
       <version>${caffeine.version}</version>
+      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <groupId>org.cache2k</groupId>
