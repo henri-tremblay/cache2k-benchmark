@@ -15,7 +15,7 @@
 
   <properties>
     <caffeine.version>2.6.2</caffeine.version>
-    <other.scope>compile</other.scope>
+    <other.scope>provided</other.scope>
   </properties>
 
   <dependencies>
@@ -41,6 +41,11 @@
       <version>9.1.7.Final</version>
       <scope>${other.scope}</scope>
     </dependency>
+    <dependency>
+      <groupId>com.hazelcast</groupId>
+      <artifactId>hazelcast</artifactId>
+      <version>3.10</version>
+      <scope>${other.scope}</scope>
     </dependency>
     <dependency>
       <groupId>org.ehcache</groupId>
