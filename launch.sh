@@ -6,15 +6,17 @@ set -x;
 test -n "$JAVA" || JAVA=java
 
 #ALGORITHM=ZipfianLoopingPrecomputedSequenceLoadingBenchmark
-#ALGORITHM=ZipfianSequenceLoadingBenchmark
-ALGORITHM=ReadOnlyBenchmark
+ALGORITHM=ZipfianSequenceLoadingBenchmark
+#ALGORITHM=ReadOnlyBenchmark
 
 CACHE_FACTORY_LIST="org.cache2k.benchmark.thirdparty.EhCache3Factory"
-#org.cache2k.benchmark.thirdparty.CaffeineCacheFactory \
-#org.cache2k.benchmark.thirdparty.GuavaCacheFactory \
-CACHE_FACTORY_LIST="$CACHE_FACTORY_LIST org.cache2k.benchmark.Cache2kFactory"
+#CACHE_FACTORY_LIST="$CACHE_FACTORY_LIST org.cache2k.benchmark.thirdparty.CaffeineCacheFactory"
+#CACHE_FACTORY_LIST="$CACHE_FACTORY_LIST org.cache2k.benchmark.thirdparty.GuavaCacheFactory"
+#CACHE_FACTORY_LIST="$CACHE_FACTORY_LIST org.cache2k.benchmark.thirdparty.InfinispanCacheFactory"
+#CACHE_FACTORY_LIST="$CACHE_FACTORY_LIST org.cache2k.benchmark.thirdparty.TCache1Factory"
+#CACHE_FACTORY_LIST="$CACHE_FACTORY_LIST org.cache2k.benchmark.Cache2kFactory"
 
-JVM_ARGS="-server -Xmx4G -XX:BiasedLockingStartupDelay=0"
+JVM_ARGS="-server -Xmx10G -XX:BiasedLockingStartupDelay=0"
 
 # Arguments:
 # -f: How many forks
@@ -23,10 +25,11 @@ JVM_ARGS="-server -Xmx4G -XX:BiasedLockingStartupDelay=0"
 # -r: Minimum time to spend in an iteration
 # -foe: Fail immediately in case of error
 BENCHMARK_QUICK="-f 1 -wi 0 -i 1 -r 1s -foe true"
-BENCHMARK_DILIGENT="-f 4 -wi 5 -w 5s -i 3 -r 5s -foe true"
-BENCHMARK_LONG="-f 1 -wi 0 -i 1 -r 500s -foe true"
+BENCHMARK_PERF="-f 1 -wi 5 -w 2s -i 4 -r 20s -foe true"
+BENCHMARK_DILIGENT="-f 4 -wi 5 -w 5s -i 3 -r 20s -foe true"
+BENCHMARK_LONG="-f 1 -wi 5 -w 2s -i 1 -r 500s -foe true"
 
-OPTIONS=$BENCHMARK_DILIGENT
+OPTIONS=$BENCHMARK_PERF
 
 # Possible profiles
 # -prof perfasm (linux only)
@@ -40,7 +43,7 @@ OPTIONS=$BENCHMARK_DILIGENT
 PROFILERS=""
 
 for I in $CACHE_FACTORY_LIST; do
-  for threads in 4; do
+  for threads in 16; do
     $JAVA -jar jmh-suite/target/benchmarks.jar \\.${ALGORITHM} -jvmArgs "$JVM_ARGS" $OPTIONS $PROFILERS \
            -t $threads -p cacheFactory=$I \
            -rf json -rff "${I}.json" \
