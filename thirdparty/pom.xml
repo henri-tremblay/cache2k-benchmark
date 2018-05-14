@@ -14,7 +14,8 @@
   <name>Benchmarks: third party products.</name>
 
   <properties>
-    <caffeine.version>2.5.2</caffeine.version>
+    <caffeine.version>2.6.2</caffeine.version>
+    <other.scope>compile</other.scope>
   </properties>
 
   <dependencies>
@@ -26,36 +27,37 @@
     <dependency>
       <groupId>com.trivago</groupId>
       <artifactId>triava</artifactId>
-      <version>0.9.5</version>
+      <version>1.0.5</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>20.0</version>
-      <scope>provided</scope>
+      <version>25.0-jre</version>
+      <scope>${other.scope}</scope>
     </dependency>
     <dependency>
       <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-core</artifactId>
-      <version>7.1.0.CR2</version>
-      <scope>provided</scope>
+      <artifactId>infinispan-embedded</artifactId>
+      <version>9.1.7.Final</version>
+      <scope>${other.scope}</scope>
+    </dependency>
     </dependency>
     <dependency>
       <groupId>org.ehcache</groupId>
       <artifactId>ehcache</artifactId>
-      <version>3.5.3-SNAPSHOT</version>
+      <version>3.5.2</version>
     </dependency>
     <dependency>
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>caffeine</artifactId>
       <version>${caffeine.version}</version>
-      <scope>provided</scope>
+      <scope>${other.scope}</scope>
     </dependency>
     <dependency>
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>simulator</artifactId>
       <version>${caffeine.version}</version>
-      <scope>provided</scope>
+      <scope>${other.scope}</scope>
       <exclusions>
         <exclusion>
           <groupId>org.cache2k</groupId>
@@ -92,22 +94,5 @@
       </exclusions>
     </dependency>
   </dependencies>
-
-  <repositories>
-    <!-- repository for infinispan -->
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Maven Repository Group</name>
-      <url>http://repository.jboss.org/nexus/content/groups/public</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-        <updatePolicy>never</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
 
 </project>

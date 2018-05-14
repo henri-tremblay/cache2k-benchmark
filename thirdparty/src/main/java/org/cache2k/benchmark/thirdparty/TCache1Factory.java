@@ -14,9 +14,9 @@ package org.cache2k.benchmark.thirdparty;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,12 +25,13 @@ package org.cache2k.benchmark.thirdparty;
  * #L%
  */
 
+import com.trivago.triava.tcache.Cache;
 import com.trivago.triava.tcache.TCacheFactory;
 import com.trivago.triava.tcache.core.Builder;
-import com.trivago.triava.tcache.eviction.Cache;
 import org.cache2k.benchmark.BenchmarkCache;
 import org.cache2k.benchmark.BenchmarkCacheFactory;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -45,7 +46,7 @@ public class TCache1Factory extends BenchmarkCacheFactory {
   public BenchmarkCache<Integer, Integer> create(int _maxElements) {
     TCacheFactory factory = TCacheFactory.standardFactory();
     Builder<Integer, Integer> b = factory.builder();
-    b.setExpectedMapSize(_maxElements);
+    b.setMaxElements(_maxElements);
 
     /**
      * Set a cache name. For some reason, auto-assigning a name does not work properly in this JMH based test.
@@ -57,8 +58,8 @@ public class TCache1Factory extends BenchmarkCacheFactory {
     b.setId(id);
 
     if (withExpiry) {
-      b.setMaxCacheTime(5 * 60);
-      b.setMaxIdleTime(5 * 60);
+      b.setMaxCacheTime(5 * 60, TimeUnit.SECONDS);
+      b.setMaxIdleTime(5 * 60, TimeUnit.SECONDS);
     }
 
     return new MyBenchmarkCacheAdapter(b, _maxElements, factory);

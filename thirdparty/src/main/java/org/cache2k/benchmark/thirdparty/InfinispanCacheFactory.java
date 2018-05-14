@@ -9,9 +9,9 @@ package org.cache2k.benchmark.thirdparty;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,7 @@ package org.cache2k.benchmark.thirdparty;
 import org.cache2k.benchmark.BenchmarkCache;
 import org.cache2k.benchmark.BenchmarkCacheFactory;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
+import org.infinispan.configuration.cache.StorageType;
 import org.infinispan.eviction.EvictionStrategy;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
@@ -45,36 +46,27 @@ public class InfinispanCacheFactory extends BenchmarkCacheFactory {
     return cacheManager;
   }
 
-  Algorithm algorithm = Algorithm.DEFAULT;
-
-  public InfinispanCacheFactory algorithm(Algorithm v) {
-    algorithm = v;
-    return this;
-  }
-
   @Override
   public BenchmarkCache<Integer, Integer> create(int _maxElements) {
     EmbeddedCacheManager m = getCacheMangaer();
     ConfigurationBuilder cb = new ConfigurationBuilder();
 
-    cb.eviction().maxEntries(_maxElements);
-    cb.storeAsBinary().disable();
+    cb.memory()
+      .size(_maxElements)
+      .storageType(StorageType.BINARY)
+      .eviction()
+        .strategy(EvictionStrategy.LRU);
+
     if (!withExpiry) {
       cb.expiration().disableReaper().lifespan(-1);
     } else {
       cb.expiration().lifespan(5 * 60, TimeUnit.SECONDS);
     }
-    switch (algorithm) {
-      case LRU: cb.eviction().strategy(EvictionStrategy.LRU); break;
-      case LIRS: cb.eviction().strategy(EvictionStrategy.LIRS); break;
-      case UNORDERED: cb.eviction().strategy(EvictionStrategy.UNORDERED); break;
-    }
+
     m.defineConfiguration(CACHE_NAME, cb.build());
     Cache<Integer, Integer> _cache = m.getCache(CACHE_NAME);
     return new MyBenchmarkCache(_cache);
   }
-
-  public enum Algorithm { DEFAULT, LRU, LIRS, UNORDERED }
 
   static class MyBenchmarkCache extends BenchmarkCache<Integer, Integer> {
 
@@ -101,7 +93,7 @@ public class InfinispanCacheFactory extends BenchmarkCacheFactory {
 
     @Override
     public int getCacheSize() {
-      return cache.getCacheConfiguration().eviction().maxEntries();
+      return (int) cache.getCacheConfiguration().memory().size();
     }
 
     @Override
