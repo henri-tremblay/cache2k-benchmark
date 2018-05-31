@@ -4,7 +4,9 @@ set -x
 set -e
 
 NAME=cache2k-benchmark
+
 SERVER="tc-bigmemory-11.eur.ad.sag"
+SERVER="tc-perf-013.eur.ad.sag"
 
 mvn clean verify -DskipTests
 

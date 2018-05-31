@@ -8,6 +8,7 @@ test -n "$JAVA" || JAVA=java
 #ALGORITHM=ZipfianLoopingPrecomputedSequenceLoadingBenchmark
 #ALGORITHM=ZipfianSequenceLoadingBenchmark
 ALGORITHM=ReadOnlyBenchmark
+#ALGORITHM=NopObserverBenchmark
 
 CACHE_FACTORY_LIST=""
 CACHE_FACTORY_LIST="$CACHE_FACTORY_LIST org.cache2k.benchmark.thirdparty.EhCache3Factory"
@@ -16,6 +17,8 @@ CACHE_FACTORY_LIST="$CACHE_FACTORY_LIST org.cache2k.benchmark.thirdparty.EhCache
 #CACHE_FACTORY_LIST="$CACHE_FACTORY_LIST org.cache2k.benchmark.thirdparty.InfinispanCacheFactory"
 #CACHE_FACTORY_LIST="$CACHE_FACTORY_LIST org.cache2k.benchmark.thirdparty.TCache1Factory"
 #CACHE_FACTORY_LIST="$CACHE_FACTORY_LIST org.cache2k.benchmark.Cache2kFactory"
+#CACHE_FACTORY_LIST="$CACHE_FACTORY_LIST org.cache2k.benchmark.HashMapFactory"
+CACHE_FACTORY_LIST="$CACHE_FACTORY_LIST org.cache2k.benchmark.ConcurrentHashMapFactory"
 
 JVM_ARGS="-server -Xmx10G -XX:BiasedLockingStartupDelay=0"
 
