@@ -90,7 +90,7 @@ noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.Cache2kFact
 noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.Cache2kFactory         50  thrpt   12  205245511.783 ± 2955261.192  ops/s
 noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.Cache2kFactory         33  thrpt   12  218353707.615 ± 4677614.064  ops/s
 
-# Baseline
+# Baseline (-f 2 -wi 5 -w 2s -i 2 -r 5s -foe true)
 
 Benchmark                                                                        (cacheFactory)  (hitRate)   Mode  Cnt         Score          Error  Units
 noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory        100  thrpt    4  41353721.827 ± 16581422.353  ops/s
@@ -122,3 +122,152 @@ Benchmark                                                                       
 noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory        100  thrpt    4  42700037.934 ± 16947911.497  ops/s
 noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory         50  thrpt    4  63714151.979 ± 20435195.293  ops/s
 noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory         33  thrpt    4  78132562.458 ± 11132973.607  ops/s
+
+# Missed only
+
+Benchmark                                                                        (cacheFactory)   Mode  Cnt          Score   Error  Units
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory  thrpt       200178891.654          ops/s
+
+# Not calling System.currentMillis
+
+Benchmark                                                                        (cacheFactory)   Mode  Cnt         Score          Error  Units
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory  thrpt    4  59776728.478 ± 19456712.949  ops/s
+
+# Use TickingTimeSource
+
+Benchmark                                                                        (cacheFactory)   Mode  Cnt         Score          Error  Units
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory  thrpt    4  60001387.453 ± 27541530.603  ops/s
+
+# Remove stats from Store
+
+Benchmark                                                                        (cacheFactory)   Mode  Cnt         Score          Error  Units
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory  thrpt    4  45237491.488 ± 11226625.324  ops/s
+
+-> 9% faster
+
+# Use NOOP observer for stats
+
+Benchmark                                                                        (cacheFactory)   Mode  Cnt         Score          Error  Units
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory  thrpt    4  46370670.952 ± 18418659.517  ops/s
+
+-> 12% faster
+
+# Remove HIT_UPDATER
+
+Benchmark                                                                        (cacheFactory)   Mode  Cnt         Score          Error  Units
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory  thrpt    4  33774026.049 ± 20280100.793  ops/s
+
+-> Slower
+
+# Use NOOP observer and CountingTimeSource
+
+Benchmark                                                                        (cacheFactory)   Mode  Cnt        Score         Error  Units
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory  thrpt    4  2624880.954 ± 9632133.517  ops/s
+
+# Use NOOP and a lambda time source
+
+AtomicLong currentTime = new AtomicLong(0);
+TimeSource timeSource = () -> currentTime.getAndIncrement();
+      
+Benchmark                                                                        (cacheFactory)   Mode  Cnt        Score         Error  Units
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory  thrpt    4  2972436.953 ± 9616643.206  ops/s
+
+# Use NOOP and CountingTimeSource on a volatile instead of AtomicLong
+
+Benchmark                                                                        (cacheFactory)   Mode  Cnt        Score         Error  Units
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory  thrpt    4  1741961.479 ± 1237271.883  ops/s
+
+-> Super slow
+
+# NOOP and TickingTimeSource
+
+Benchmark                                                                        (cacheFactory)   Mode  Cnt         Score           Error  Units
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory  thrpt    4  59765239.009 ± 104872615.621  ops/s
+
+# Dedicated for no expiration code (keeping NOOP and TickingTimeSource)
+
+Benchmark                                                                        (cacheFactory)   Mode  Cnt         Score          Error  Units
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory  thrpt    4  64462922.741 ± 76449839.649  ops/s
+
+# State of the union
+
+Benchmark                                                                        (cacheFactory)       Mode   Cnt         Score          Error  Units
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory       thrpt    4   64449135.981 ± 90 600 815.971  ops/s
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.Cache2kFactory                   thrpt    4  159831848.710 ±  6096369.716  ops/s
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.GuavaCacheFactory     thrpt    4    9311315.102 ± 19518240.503  ops/s
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.CaffeineCacheFactory  thrpt    4   33007824.839 ± 60520795.706  ops/s
+
+We beat caffeine and guava. We are still slower and less stable than Cache2k.
+
+# Conditional expiry routine
+
+Benchmark                                                                        (cacheFactory)   Mode  Cnt         Score          Error  Units
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory  thrpt    4  61861030.056 ± 32436110.493  ops/s
+
+# Same with MethodHandle
+
+Benchmark                                                                        (cacheFactory)   Mode  Cnt         Score          Error  Units
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory  thrpt    4  64449135.446 ± 39993712.328  ops/s
+
+# Another state of the union
+
+Benchmark                                                                    (cacheFactory)       (entryCount)  (factor)   Mode  Cnt        Score         Error  Units
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.EhCache3Factory             100000         5  thrpt    4  1636894.757 ± 5775550.299  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.EhCache3Factory             100000        10  thrpt    4  1527649.828 ± 5012961.763  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.EhCache3Factory             100000        20  thrpt    4  1413213.677 ± 2663370.465  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.EhCache3Factory            1000000         5  thrpt    4  2286276.308 ± 6622585.091  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.EhCache3Factory            1000000        10  thrpt    4  2346386.567 ± 3402675.256  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.EhCache3Factory            1000000        20  thrpt    4  2044170.701 ± 8844943.189  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.EhCache3Factory           10000000         5  thrpt    4   911470.111 ± 2286141.677  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.EhCache3Factory           10000000        10  thrpt    4   831163.179 ± 1469985.305  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.EhCache3Factory           10000000        20  thrpt    4   889365.321 ± 2380750.173  ops/s
+
+Benchmark                                                                         (cacheFactory)  (entryCount)  (factor)   Mode  Cnt        Score         Error  Units
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.CaffeineCacheFactory        100000         5  thrpt    4  4485518.550 ± 1060011.713  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.CaffeineCacheFactory        100000        10  thrpt    4  3163914.849 ± 1849204.129  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.CaffeineCacheFactory        100000        20  thrpt    4  3253047.386 ± 1490094.866  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.CaffeineCacheFactory       1000000         5  thrpt    4  3055092.258 ± 3441664.724  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.CaffeineCacheFactory       1000000        10  thrpt    4  2916995.918 ±  781028.988  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.CaffeineCacheFactory       1000000        20  thrpt    4  2455270.711 ± 1416251.189  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.CaffeineCacheFactory      10000000         5  thrpt    4  1779940.522 ± 9170334.314  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.CaffeineCacheFactory      10000000        10  thrpt    4  1331280.848 ± 7372144.648  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.CaffeineCacheFactory      10000000        20  thrpt    4  1580573.128 ± 2710331.829  ops/s
+
+Benchmark                                                        (cacheFactory)  (entryCount)  (factor)   Mode  Cnt        Score         Error  Units
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.Cache2kFactory                         100000         5  thrpt    4  6038095.966 ±  537899.540  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.Cache2kFactory                         100000        10  thrpt    4  4650282.958 ±  602192.919  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.Cache2kFactory                         100000        20  thrpt    4  3862124.888 ±  671211.314  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.Cache2kFactory                        1000000         5  thrpt    4  5433638.592 ±  765516.119  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.Cache2kFactory                        1000000        10  thrpt    4  4162129.644 ±  465895.328  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.Cache2kFactory                        1000000        20  thrpt    4  3400575.280 ±   39625.985  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.Cache2kFactory                       10000000         5  thrpt    4  1808464.518 ± 1933266.397  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.Cache2kFactory                       10000000        10  thrpt    4  1352427.860 ± 1449337.056  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.Cache2kFactory                       10000000        20  thrpt    4  1111346.491 ± 1249410.208  ops/s
+
+Benchmark                                                                      (cacheFactory)  (entryCount)  (factor)   Mode  Cnt        Score         Error  Units
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.GuavaCacheFactory           100000         5  thrpt    4  6817927.350 ±  403310.968  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.GuavaCacheFactory           100000        10  thrpt    4  6005365.394 ±  917800.711  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.GuavaCacheFactory           100000        20  thrpt    4  5457486.711 ±  898668.641  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.GuavaCacheFactory          1000000         5  thrpt    4  6769433.640 ±  416129.717  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.GuavaCacheFactory          1000000        10  thrpt    4  6068698.083 ±  317827.842  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.GuavaCacheFactory          1000000        20  thrpt    4  5572943.717 ±  328657.698  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.GuavaCacheFactory         10000000         5  thrpt    4  6329557.126 ±  980744.214  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.GuavaCacheFactory         10000000        10  thrpt    4  5611341.544 ± 1074960.773  ops/s
+ZipfianSequenceLoadingBenchmark.operation  org.cache2k.benchmark.thirdparty.GuavaCacheFactory         10000000        20  thrpt    4  5162311.803 ± 1146018.631  ops/s
+
+# Changing server to tc-perf-013.eur.ad.sag. Compare with CHM
+
+Benchmark                                                                             (cacheFactory)   Mode  Cnt          Score          Error  Units
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory       thrpt    6   67 416 676.092 ± 23 083 468.495  ops/s <- 2 forks
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.CaffeineCacheFactory  thrpt    6   99 626 286.174 ± 48 898 933.956  ops/s
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.GuavaCacheFactory     thrpt    6    7 556 089.204 ±  8 156 452.763  ops/s
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.Cache2kFactory                   thrpt    6  210 752 880.797 ±  3 933 185.445  ops/s
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.HashMapFactory                   thrpt    6  550 831 643.635 ± 86 827 137.895  ops/s
+
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory       thrpt   20   66 911 373.304 ±  5 214 378.328  ops/s <- 5 forks
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.Cache2kFactory                   thrpt   20  209 230 668.902 ±  3 855 382.006  ops/s
+
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory       thrpt   40   66 600 003.079 ±  2 881 072.060  ops/s <- 10 forks
+
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.thirdparty.EhCache3Factory        thrpt   20  66 827 692.873 ±  5 053 836.310  ops/s <- 10 forks 10 seconds
+noEviction.symmetrical.ReadOnlyBenchmark.read  org.cache2k.benchmark.ConcurrentHashMapFactory          thrpt   20 521 046 175.400 ± 21 067 229.974  ops/s
