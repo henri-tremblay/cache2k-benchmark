@@ -15,7 +15,7 @@
 
   <properties>
     <caffeine.version>2.6.2</caffeine.version>
-    <other.scope>provided</other.scope>
+    <other.scope>compile</other.scope>
   </properties>
 
   <dependencies>
@@ -28,6 +28,7 @@
       <groupId>com.trivago</groupId>
       <artifactId>triava</artifactId>
       <version>1.0.5</version>
+      <scope>${other.scope}</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
