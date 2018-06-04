@@ -22,6 +22,7 @@ package org.cache2k.benchmark.jmh.suite.noEviction.symmetrical;
 
 import org.cache2k.benchmark.BenchmarkCache;
 import org.cache2k.benchmark.jmh.BenchmarkBase;
+import org.cache2k.benchmark.thirdparty.EhCache3Factory;
 import org.cache2k.benchmark.util.AccessPattern;
 import org.cache2k.benchmark.util.RandomAccessPattern;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -49,8 +50,8 @@ public class ReadOnlyBenchmark extends BenchmarkBase {
   public static final int ENTRY_COUNT = 100 * 1000;
   public static final int PATTERN_COUNT = 1000 * 1000;
 
-  @Param({"100", "50", "33"})
-  public int hitRate = 0;
+//  @Param({"100", "50", "33"})
+  public int hitRate = 100;
 
   private final static AtomicInteger offset = new AtomicInteger(0);
 
@@ -67,10 +68,18 @@ public class ReadOnlyBenchmark extends BenchmarkBase {
   public void setup() throws Exception {
     cache = getFactory().create(ENTRY_COUNT);
     ints = new Integer[PATTERN_COUNT];
-    AccessPattern _pattern =
-      new RandomAccessPattern((int) (ENTRY_COUNT * (100D / hitRate)));
+
+    int origin = 0, rate = hitRate;
+    if(hitRate == 0) {
+      rate = 100;
+      origin = ENTRY_COUNT;
+    }
+
+    AccessPattern _pattern = new RandomAccessPattern((int) (ENTRY_COUNT * (100D / rate)));
+
     for (int i = 0; i < PATTERN_COUNT; i++) {
-      ints[i] = _pattern.next();
+      int next = _pattern.next();
+      ints[i] = origin + next;
     }
     for (int i = 0; i < ENTRY_COUNT; i++) {
       cache.put(i, i);
@@ -82,11 +91,27 @@ public class ReadOnlyBenchmark extends BenchmarkBase {
     recordMemoryAndDestroy(cache);
   }
 
+//  @Benchmark @BenchmarkMode(Mode.Throughput)
+//  public Integer baseline(ThreadState threadState) {
+//    int idx = (int) (threadState.index++ % PATTERN_COUNT);
+//    Integer key = ints[idx];
+//    return key;
+//  }
+
   @Benchmark @BenchmarkMode(Mode.Throughput)
   public Integer read(ThreadState threadState) {
     int idx = (int) (threadState.index++ % PATTERN_COUNT);
     Integer key = ints[idx];
-    return cache.getIfPresent(key);
+    Integer value = cache.getIfPresent(key);
+    return value;
   }
 
+  public static void main(String[] args) throws Exception {
+    ReadOnlyBenchmark benchmark = new ReadOnlyBenchmark();
+    benchmark.cacheFactory = EhCache3Factory.class.getName();
+    benchmark.setup();
+    ThreadState state = new ThreadState();
+    benchmark.read(state);
+    benchmark.tearDown();
+  }
 }
